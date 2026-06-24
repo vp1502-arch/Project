@@ -72,6 +72,8 @@ export interface TrainingRequest {
   requesterName: string;
   requesterEmail: string;
   preferredDates?: string | null;
+  requestedSlot?: string | null;
+  durationMins?: number;
   notes?: string | null;
   status: string;
   createdAt: string;

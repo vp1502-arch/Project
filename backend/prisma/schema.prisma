@@ -86,13 +86,15 @@ model Faq {
 }
 
 model TrainingRequest {
-  id             Int      @id @default(autoincrement())
-  tool           Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  id             Int       @id @default(autoincrement())
+  tool           Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
   toolId         Int
   requesterName  String
   requesterEmail String
-  preferredDates String? // comma-separated / free text
+  preferredDates String? // free text fallback
+  requestedSlot  DateTime? // chosen calendar slot (start)
+  durationMins   Int       @default(60)
   notes          String?
-  status         String   @default("new") // new | scheduled | completed | cancelled
-  createdAt      DateTime @default(now())
+  status         String    @default("new") // new | scheduled | completed | cancelled
+  createdAt      DateTime  @default(now())
 }

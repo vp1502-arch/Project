@@ -13,6 +13,7 @@ export default function AdminToolForm() {
     shortDescription: '',
     fullDescription: '',
     url: '',
+    logoUrl: '',
     status: 'active',
     publishState: 'published',
     categoryId: '',
@@ -32,6 +33,7 @@ export default function AdminToolForm() {
         shortDescription: t.shortDescription,
         fullDescription: t.fullDescription,
         url: t.url,
+        logoUrl: t.logoUrl ?? '',
         status: t.status,
         publishState: t.publishState,
         categoryId: t.categoryId ? String(t.categoryId) : '',
@@ -48,6 +50,7 @@ export default function AdminToolForm() {
       shortDescription: form.shortDescription,
       fullDescription: form.fullDescription,
       url: form.url,
+      logoUrl: form.logoUrl || null,
       status: form.status,
       publishState: form.publishState,
       categoryId: form.categoryId ? Number(form.categoryId) : null,
@@ -103,6 +106,16 @@ export default function AdminToolForm() {
             value={form.url}
             onChange={(e) => setForm({ ...form, url: e.target.value })}
             placeholder="https://…"
+            className={field}
+          />
+        </label>
+        <label className="block text-sm font-medium text-gray-700">
+          Logo URL
+          <input
+            type="url"
+            value={form.logoUrl}
+            onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
+            placeholder="https://…/logo.png (optional)"
             className={field}
           />
         </label>

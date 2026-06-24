@@ -10,10 +10,12 @@ const createSchema = z.object({
   requesterName: z.string().min(1),
   requesterEmail: z.string().email(),
   preferredDates: z.string().optional().nullable(),
+  requestedSlot: z.string().datetime().optional().nullable(),
+  durationMins: z.number().int().positive().optional(),
   notes: z.string().optional().nullable(),
 });
 
-// Public: submit a training request
+// Public: submit a training request / booking
 trainingRouter.post('/', async (req, res) => {
   const parsed = createSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -21,7 +23,15 @@ trainingRouter.post('/', async (req, res) => {
   }
   const tool = await prisma.tool.findUnique({ where: { id: parsed.data.toolId } });
   if (!tool) return res.status(404).json({ error: 'Tool not found' });
-  const request = await prisma.trainingRequest.create({ data: parsed.data });
+  const { requestedSlot, ...rest } = parsed.data;
+  const request = await prisma.trainingRequest.create({
+    data: {
+      ...rest,
+      requestedSlot: requestedSlot ? new Date(requestedSlot) : null,
+      // A booking with a chosen slot is treated as scheduled.
+      status: requestedSlot ? 'scheduled' : 'new',
+    },
+  });
   res.status(201).json(request);
 });
 

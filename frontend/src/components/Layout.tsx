@@ -1,6 +1,31 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useAuth } from '../auth';
+import UnileverLogo from './UnileverLogo';
+
+// Renders the official Unilever brand logo if an approved asset has been added
+// at /public/unilever-logo.svg; otherwise shows a labelled reserved slot so the
+// space is clearly allocated for the brand mark.
+function BrandLogo() {
+  const src = '/unilever-logo.svg';
+  return (
+    <div className="flex h-10 items-center">
+      <img
+        src={src}
+        alt="Unilever"
+        className="h-8 w-auto"
+        onError={(e) => {
+          const img = e.currentTarget;
+          img.style.display = 'none';
+          img.nextElementSibling?.classList.remove('hidden');
+        }}
+      />
+      <div className="hidden h-9 w-28 items-center justify-center rounded-md border border-dashed border-white/40 text-[10px] uppercase tracking-wide text-white/60">
+        Brand logo
+      </div>
+    </div>
+  );
+}
 
 function navClass({ isActive }: { isActive: boolean }) {
   return `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
@@ -16,15 +41,22 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="min-h-full flex flex-col">
       <header className="bg-unilever-blue text-white shadow-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-unilever-blue font-extrabold">
-              AI
-            </span>
-            <div className="leading-tight">
-              <div className="font-bold text-lg">AI Hub</div>
-              <div className="text-[11px] uppercase tracking-wide text-white/70">Unilever Mumbai</div>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center gap-2.5">
+              <UnileverLogo size={40} />
+              <div className="leading-tight">
+                <div className="font-bold text-lg">AI Hub</div>
+                <div className="text-[11px] uppercase tracking-wide text-white/70">
+                  Unilever Mumbai
+                </div>
+              </div>
+            </Link>
+            {/* Reserved space for the official Unilever brand logo (drop the
+                approved asset at /public/unilever-logo.svg to display it). */}
+            <div className="hidden md:flex items-center pl-4 ml-1 border-l border-white/25">
+              <BrandLogo />
             </div>
-          </Link>
+          </div>
           <nav className="flex items-center gap-1">
             <NavLink to="/" className={navClass} end>
               Catalog

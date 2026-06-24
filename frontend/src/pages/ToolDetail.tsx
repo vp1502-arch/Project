@@ -34,13 +34,28 @@ export default function ToolDetail() {
 
       <div className="mt-4 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-extrabold text-gray-900">{tool.name}</h1>
-            <StatusBadge status={tool.status} />
+          <div className="flex items-center gap-4">
+            {tool.logoUrl ? (
+              <img
+                src={tool.logoUrl}
+                alt={`${tool.name} logo`}
+                className="h-14 w-14 rounded-xl object-contain bg-white border border-gray-200 p-1"
+              />
+            ) : (
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-unilever-blue/10 text-2xl font-bold text-unilever-blue">
+                {tool.name.charAt(0)}
+              </div>
+            )}
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-extrabold text-gray-900">{tool.name}</h1>
+                <StatusBadge status={tool.status} />
+              </div>
+              {tool.category && (
+                <p className="mt-1 text-sm text-unilever-cyan font-medium">{tool.category.name}</p>
+              )}
+            </div>
           </div>
-          {tool.category && (
-            <p className="mt-1 text-sm text-unilever-cyan font-medium">{tool.category.name}</p>
-          )}
           <p className="mt-4 text-gray-700 whitespace-pre-line">{tool.fullDescription}</p>
 
           <div className="mt-6 flex flex-wrap gap-3">

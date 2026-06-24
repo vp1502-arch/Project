@@ -85,9 +85,17 @@ export default function Home() {
               className="group flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-unilever-blue/40"
             >
               <div className="flex items-start justify-between">
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-unilever-blue/10 text-unilever-blue font-bold">
-                  {tool.name.charAt(0)}
-                </div>
+                {tool.logoUrl ? (
+                  <img
+                    src={tool.logoUrl}
+                    alt={`${tool.name} logo`}
+                    className="h-11 w-11 rounded-lg object-contain bg-white border border-gray-200 p-1"
+                  />
+                ) : (
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-unilever-blue/10 text-unilever-blue font-bold">
+                    {tool.name.charAt(0)}
+                  </div>
+                )}
                 <StatusBadge status={tool.status} />
               </div>
               <h3 className="mt-4 font-semibold text-gray-900 group-hover:text-unilever-blue">

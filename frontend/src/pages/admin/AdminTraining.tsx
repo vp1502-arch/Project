@@ -27,7 +27,7 @@ export default function AdminTraining() {
             <tr>
               <th className="px-4 py-3">Requester</th>
               <th className="px-4 py-3">Tool</th>
-              <th className="px-4 py-3">Preferred</th>
+              <th className="px-4 py-3">Booked slot</th>
               <th className="px-4 py-3">Status</th>
             </tr>
           </thead>
@@ -39,7 +39,16 @@ export default function AdminTraining() {
                   <div className="text-xs text-gray-500">{r.requesterEmail}</div>
                 </td>
                 <td className="px-4 py-3 text-gray-600">{r.tool?.name ?? r.toolId}</td>
-                <td className="px-4 py-3 text-gray-600">{r.preferredDates || '—'}</td>
+                <td className="px-4 py-3 text-gray-600">
+                  {r.requestedSlot
+                    ? new Date(r.requestedSlot).toLocaleString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      }) + ` · ${r.durationMins ?? 60}m`
+                    : r.preferredDates || '—'}
+                </td>
                 <td className="px-4 py-3">
                   <select
                     value={r.status}
