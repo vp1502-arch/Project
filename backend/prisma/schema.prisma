@@ -1,0 +1,100 @@
+// AI Hub - Unilever Mumbai
+// SQLite for local dev (Prisma). PostgreSQL-ready for production.
+// Note: SQLite does not support native enums or scalar lists, so role/status
+// are stored as strings and list-like fields use relations or comma values.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("viewer") // admin | editor | viewer
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  tools       Tool[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tools Tool[] @relation("ToolTags")
+}
+
+model Poc {
+  id        Int     @id @default(autoincrement())
+  name      String
+  role      String?
+  email     String
+  avatarUrl String?
+  tools     Tool[]  @relation("ToolPocs")
+}
+
+model Tool {
+  id               Int               @id @default(autoincrement())
+  name             String
+  slug             String            @unique
+  shortDescription String
+  fullDescription  String
+  url              String
+  logoUrl          String?
+  status           String            @default("active") // active | beta | deprecated
+  publishState     String            @default("published") // draft | published
+  clickCount       Int               @default(0)
+  category         Category?         @relation(fields: [categoryId], references: [id])
+  categoryId       Int?
+  tags             Tag[]             @relation("ToolTags")
+  pocs             Poc[]             @relation("ToolPocs")
+  trainingDocs     TrainingDoc[]
+  faqs             Faq[]
+  trainingRequests TrainingRequest[]
+  createdBy        String?
+  updatedBy        String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model TrainingDoc {
+  id     Int    @id @default(autoincrement())
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId Int
+  title  String
+  type   String @default("link") // link | file
+  url    String
+}
+
+model Faq {
+  id       Int     @id @default(autoincrement())
+  tool     Tool?   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId   Int? // null = global FAQ
+  question String
+  answer   String
+  order    Int     @default(0)
+}
+
+model TrainingRequest {
+  id             Int       @id @default(autoincrement())
+  tool           Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId         Int
+  requesterName  String
+  requesterEmail String
+  preferredDates String? // free text fallback
+  requestedSlot  DateTime? // chosen calendar slot (start)
+  durationMins   Int       @default(60)
+  notes          String?
+  status         String    @default("new") // new | scheduled | completed | cancelled
+  createdAt      DateTime  @default(now())
+}
